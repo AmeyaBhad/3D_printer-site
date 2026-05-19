@@ -70,6 +70,17 @@ None of these require a credit card on the free tier. Ping me when ready — bac
 | Backend env vars (hosted) | Render dashboard → Environment |
 | Frontend env vars (local dev) | `frontend/.env` (gitignored) |
 | Frontend env vars (hosted) | Vercel dashboard → Settings → Environment Variables |
-| Seed user credentials | `Backend/src/main/java/com/forge3d/backend/config/DataSeeder.java` |
 
-Seed logins for testing: `admin@3dforge.com` / `admin123` and `user@3dforge.com` / `password`.
+## Seed accounts (admin / regular user)
+
+Passwords are **not** hardcoded — set them via env vars before first run so admin/user
+get auto-created on startup. Without these, no seed users are created and you'll
+need to register via the UI.
+
+```
+SEED_ADMIN_PASSWORD=your-chosen-password
+SEED_USER_PASSWORD=your-chosen-password
+```
+
+(Defaults: `SEED_ADMIN_EMAIL=admin@3dforge.com`, `SEED_USER_EMAIL=user@3dforge.com` —
+override those env vars if you want different addresses.)

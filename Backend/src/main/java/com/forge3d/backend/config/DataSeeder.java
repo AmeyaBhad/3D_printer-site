@@ -6,6 +6,7 @@ import com.forge3d.backend.model.User;
 import com.forge3d.backend.repository.ProductRepository;
 import com.forge3d.backend.repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,11 @@ public class DataSeeder implements CommandLineRunner {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${seed.admin.email}") private String seedAdminEmail;
+    @Value("${seed.admin.password}") private String seedAdminPassword;
+    @Value("${seed.user.email}") private String seedUserEmail;
+    @Value("${seed.user.password}") private String seedUserPassword;
 
     public DataSeeder(ProductRepository productRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.productRepository = productRepository;
@@ -32,27 +38,26 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        if (!userRepository.existsByEmail("admin@3dforge.com")) {
-            User admin = new User();
-            admin.setEmail("admin@3dforge.com");
-            admin.setPassword(passwordEncoder.encode("admin123"));
-            admin.setDisplayName("Admin");
-            admin.setRole(User.Role.ADMIN);
-            
-            userRepository.save(admin);
-            System.out.println("Data Seeder: Seeded Admin User.");
-        }
+        seedUser(seedAdminEmail, seedAdminPassword, "Admin", User.Role.ADMIN);
+        seedUser(seedUserEmail, seedUserPassword, "User", User.Role.USER);
+    }
 
-        if (!userRepository.existsByEmail("user@3dforge.com")) {
-            User user = new User();
-            user.setEmail("user@3dforge.com");
-            user.setPassword(passwordEncoder.encode("password"));
-            user.setDisplayName("User");
-            user.setRole(User.Role.USER);
-            
-            userRepository.save(user);
-            System.out.println("Data Seeder: Seeded Standard User.");
+    private void seedUser(String email, String password, String displayName, User.Role role) {
+        if (password == null || password.isBlank()) {
+            // No password configured for this role — skip seeding. Set the env var
+            // (SEED_ADMIN_PASSWORD / SEED_USER_PASSWORD) to enable.
+            return;
         }
+        if (email == null || email.isBlank() || userRepository.existsByEmail(email)) {
+            return;
+        }
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setDisplayName(displayName);
+        user.setRole(role);
+        userRepository.save(user);
+        System.out.println("Data Seeder: Seeded " + role + " user " + email);
     }
 
     private void seedProducts() {
