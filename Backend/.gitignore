@@ -1,0 +1,30 @@
+# Compiled artifacts under target — keep target/classes (matches existing repo layout),
+# ignore everything else under target.
+target/*
+!target/classes/
+
+# Eclipse / STS (machine-specific)
+.classpath
+.project
+.settings/
+.factorypath
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Spring Boot / app data (regenerated on first run by DataSeeder)
+data/*.mv.db
+data/*.trace.db
+data/*.lock.db
+
+# Logs
+*.log
