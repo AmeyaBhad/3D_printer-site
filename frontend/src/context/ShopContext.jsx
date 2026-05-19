@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import { api, setToken, clearToken, getToken } from '../api';
+import { openCheckout } from '../razorpay';
 
 export const ShopContext = createContext();
 
@@ -20,6 +21,7 @@ export const ShopProvider = ({ children }) => {
     });
     const [productsLoading, setProductsLoading] = useState(true);
     const [productsError, setProductsError] = useState(null);
+    const [paymentsEnabled, setPaymentsEnabled] = useState(false);
 
     const refreshProducts = useCallback(async () => {
         setProductsLoading(true);
@@ -37,6 +39,14 @@ export const ShopProvider = ({ children }) => {
     useEffect(() => {
         refreshProducts();
     }, [refreshProducts]);
+
+    useEffect(() => {
+        let cancelled = false;
+        api.paymentConfig()
+            .then(cfg => { if (!cancelled) setPaymentsEnabled(Boolean(cfg?.enabled)); })
+            .catch(() => { if (!cancelled) setPaymentsEnabled(false); });
+        return () => { cancelled = true; };
+    }, []);
 
     useEffect(() => {
         if (currentUser) {
@@ -151,9 +161,34 @@ export const ShopProvider = ({ children }) => {
         if (cart.length === 0) throw new Error('Cart is empty');
         const items = cart.map(item => ({ productId: item.id, quantity: item.quantity }));
         const order = await api.placeOrder(items);
+
+        if (!paymentsEnabled) {
+            // No Razorpay configured — finalize the order without payment (demo / dev mode).
+            clearCart();
+            await refreshProducts();
+            return { order, paid: false };
+        }
+
+        const payment = await api.createPayment(order.id);
+        const resp = await openCheckout({
+            keyId: payment.razorpayKeyId,
+            razorpayOrderId: payment.razorpayOrderId,
+            amountPaise: payment.amountPaise,
+            currency: payment.currency,
+            name: '3DForge',
+            description: `Order #${order.id}`,
+            prefill: currentUser ? { name: currentUser.displayName, email: currentUser.email } : {},
+        });
+
+        const paidOrder = await api.verifyPayment(order.id, {
+            razorpayOrderId: resp.razorpay_order_id,
+            razorpayPaymentId: resp.razorpay_payment_id,
+            razorpaySignature: resp.razorpay_signature,
+        });
+
         clearCart();
         await refreshProducts();
-        return order;
+        return { order: paidOrder, paid: true };
     };
 
     // If we have a stored user but no token, clear stale state.
@@ -170,7 +205,7 @@ export const ShopProvider = ({ children }) => {
             isCartOpen, setIsCartOpen, toggleCart,
             currentUser, login, register, googleLogin, logout,
             addProduct, toggleProductStatus,
-            placeOrder,
+            placeOrder, paymentsEnabled,
         }}>
             {children}
         </ShopContext.Provider>

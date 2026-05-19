@@ -48,4 +48,11 @@ export const api = {
 
     placeOrder: (items) => request('/orders', { method: 'POST', body: { items }, auth: true }),
     listMyOrders: () => request('/orders', { auth: true }),
+
+    paymentConfig: () => request('/payments/config'),
+    createPayment: (orderId) => request(`/payments/orders/${orderId}`, { method: 'POST', auth: true }),
+    verifyPayment: (orderId, payload) =>
+        request(`/payments/verify?orderId=${orderId}`, { method: 'POST', body: payload, auth: true }),
+
+    chat: (message) => request('/chat', { method: 'POST', body: { message } }),
 };

@@ -7,7 +7,7 @@ const CartModal = () => {
     const {
         isCartOpen, setIsCartOpen, cart,
         removeFromCart, updateCartQuantity,
-        currentUser, placeOrder,
+        currentUser, placeOrder, paymentsEnabled,
     } = useContext(ShopContext);
     const [checkoutError, setCheckoutError] = useState('');
     const [checkoutSuccess, setCheckoutSuccess] = useState('');
@@ -24,8 +24,10 @@ const CartModal = () => {
         }
         setSubmitting(true);
         try {
-            const order = await placeOrder();
-            setCheckoutSuccess(`Order #${order.id} placed successfully.`);
+            const result = await placeOrder();
+            setCheckoutSuccess(result.paid
+                ? `Payment successful — order #${result.order.id} confirmed.`
+                : `Order #${result.order.id} placed successfully.`);
         } catch (err) {
             setCheckoutError(err.message || 'Checkout failed.');
         } finally {
@@ -124,8 +126,15 @@ const CartModal = () => {
                         disabled={submitting || cart.length === 0}
                         className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
                     >
-                        {submitting ? 'Placing order...' : 'Proceed to Checkout'}
+                        {submitting
+                            ? (paymentsEnabled ? 'Opening payment...' : 'Placing order...')
+                            : (paymentsEnabled ? 'Pay with Razorpay' : 'Proceed to Checkout')}
                     </motion.button>
+                    {!paymentsEnabled && cart.length > 0 && (
+                        <p className="text-xs text-gray-500 text-center mt-2">
+                            Payment gateway is not configured — orders will be created without payment.
+                        </p>
+                    )}
                 </div>
                     </motion.div>
                 </motion.div>

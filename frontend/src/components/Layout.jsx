@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import CartModal from './CartModal';
+import Chatbot from './Chatbot';
 
 const Layout = ({ children }) => {
     return (
@@ -12,6 +13,7 @@ const Layout = ({ children }) => {
             </main>
             <Footer />
             <CartModal />
+            <Chatbot />
         </div>
     );
 };
