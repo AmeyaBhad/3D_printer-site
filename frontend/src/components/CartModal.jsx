@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShopContext } from '../context/ShopContext';
 import { X, Minus, Plus } from 'lucide-react';
 
@@ -11,8 +12,6 @@ const CartModal = () => {
     const [checkoutError, setCheckoutError] = useState('');
     const [checkoutSuccess, setCheckoutSuccess] = useState('');
     const [submitting, setSubmitting] = useState(false);
-
-    if (!isCartOpen) return null;
 
     const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
@@ -35,8 +34,25 @@ const CartModal = () => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/70 z-[100] flex justify-center items-center backdrop-blur-sm transition-opacity duration-300">
-            <div className="bg-gray-800 w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl rounded-lg shadow-2xl relative max-h-[90vh] flex flex-col transform scale-100 opacity-100 transition-all duration-300">
+        <AnimatePresence>
+            {isCartOpen && (
+                <motion.div
+                    key="cart-overlay"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed inset-0 bg-black/70 z-[100] flex justify-center items-center backdrop-blur-sm"
+                    onClick={(e) => { if (e.target === e.currentTarget) setIsCartOpen(false); }}
+                >
+                    <motion.div
+                        key="cart-panel"
+                        initial={{ opacity: 0, scale: 0.94, y: 16 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.94, y: 16 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="bg-gray-800 w-11/12 md:w-2/3 lg:w-1/2 max-w-4xl rounded-lg shadow-2xl relative max-h-[90vh] flex flex-col"
+                    >
                 <div className="p-6 border-b border-gray-700 flex justify-between items-center flex-shrink-0">
                     <h2 className="text-2xl font-bold text-white">Your Cart</h2>
                     <button onClick={() => setIsCartOpen(false)} className="text-gray-400 hover:text-white transition-colors">
@@ -48,8 +64,17 @@ const CartModal = () => {
                     {cart.length === 0 ? (
                         <p className="text-gray-400 text-center">Your cart is empty.</p>
                     ) : (
-                        cart.map(item => (
-                            <div key={item.id} className="flex items-center justify-between mb-4 border-b border-gray-700 pb-4 last:border-0">
+                        <AnimatePresence>
+                        {cart.map(item => (
+                            <motion.div
+                                key={item.id}
+                                layout
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 30, transition: { duration: 0.2 } }}
+                                transition={{ duration: 0.25 }}
+                                className="flex items-center justify-between mb-4 border-b border-gray-700 pb-4 last:border-0"
+                            >
                                 <div className="flex items-center space-x-4">
                                     <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
                                     <div>
@@ -79,8 +104,9 @@ const CartModal = () => {
                                         Remove
                                     </button>
                                 </div>
-                            </div>
-                        ))
+                            </motion.div>
+                        ))}
+                        </AnimatePresence>
                     )}
                 </div>
 
@@ -91,16 +117,20 @@ const CartModal = () => {
                         <span className="text-gray-300">Subtotal:</span>
                         <span className="text-white">${subtotal.toFixed(2)}</span>
                     </div>
-                    <button
+                    <motion.button
+                        whileHover={{ scale: cart.length === 0 || submitting ? 1 : 1.02 }}
+                        whileTap={{ scale: cart.length === 0 || submitting ? 1 : 0.98 }}
                         onClick={handleCheckout}
                         disabled={submitting || cart.length === 0}
                         className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-bold py-3 px-4 rounded-lg transition-colors"
                     >
                         {submitting ? 'Placing order...' : 'Proceed to Checkout'}
-                    </button>
+                    </motion.button>
                 </div>
-            </div>
-        </div>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 };
 

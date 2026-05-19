@@ -1,5 +1,6 @@
 import React, { useContext, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ShopContext } from '../context/ShopContext';
 import { ArrowLeft, ShoppingCart, Star } from 'lucide-react';
 
@@ -47,17 +48,29 @@ const ProductDetails = () => {
 
                 <div className="grid md:grid-cols-2 gap-12">
                     {/* Image Section */}
-                    <div className="bg-gray-800 rounded-2xl p-6 shadow-xl animate-fade-in">
-                        <img
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                        className="bg-gray-800 rounded-2xl p-6 shadow-xl"
+                    >
+                        <motion.img
                             src={product.image}
                             alt={product.name}
-                            className="w-full h-auto object-cover rounded-xl shadow-lg transform hover:scale-[1.02] transition-transform duration-500"
+                            whileHover={{ scale: 1.03 }}
+                            transition={{ duration: 0.4 }}
+                            className="w-full h-auto object-cover rounded-xl shadow-lg"
                             onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/600x600/2d3748/ffffff?text=Image+Error'; }}
                         />
-                    </div>
+                    </motion.div>
 
                     {/* Details Section */}
-                    <div className="flex flex-col justify-center animate-slide-in-right">
+                    <motion.div
+                        initial={{ opacity: 0, x: 40 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+                        className="flex flex-col justify-center"
+                    >
                         <span className="text-amber-400 font-semibold tracking-wider uppercase mb-2">{product.category}</span>
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">{product.name}</h1>
 
@@ -92,15 +105,17 @@ const ProductDetails = () => {
                                 )}
                             </div>
 
-                            <button
+                            <motion.button
+                                whileHover={{ scale: 1.02, y: -2 }}
+                                whileTap={{ scale: 0.98 }}
                                 onClick={handleAddToCart}
-                                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-amber-500/20 transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-amber-500/20 transition-colors flex items-center justify-center gap-2"
                             >
                                 <ShoppingCart className="w-5 h-5" />
                                 {product.stock > 0 ? "Add to Cart" : "Request Order"}
-                            </button>
+                            </motion.button>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
         </div>

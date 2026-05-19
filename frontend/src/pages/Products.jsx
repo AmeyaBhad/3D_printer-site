@@ -1,7 +1,17 @@
 import React, { useContext, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShopContext } from '../context/ShopContext';
 import ProductCard from '../components/ProductCard';
 import { Search } from 'lucide-react';
+
+const gridContainer = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+};
+const gridItem = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: 'easeOut' } },
+};
 
 const Products = () => {
     const { products, productsLoading, productsError } = useContext(ShopContext);
@@ -41,10 +51,15 @@ const Products = () => {
     return (
         <div id="products" className="page active">
             <div className="bg-gray-800 py-12">
-                <div className="container mx-auto px-6 text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: -16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="container mx-auto px-6 text-center"
+                >
                     <h1 className="text-4xl font-bold text-white">Our Collection</h1>
                     <p className="text-gray-400 mt-2">Browse through our ever-growing library of 3D printed wonders.</p>
-                </div>
+                </motion.div>
             </div>
             <div className="container mx-auto px-6 py-12">
                 <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
@@ -83,13 +98,34 @@ const Products = () => {
                     </p>
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                            {filteredProducts.map(product => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
+                        <motion.div
+                            key={`${sortOption}-${searchTerm}`}
+                            variants={gridContainer}
+                            initial="hidden"
+                            animate="show"
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                        >
+                            <AnimatePresence>
+                                {filteredProducts.map(product => (
+                                    <motion.div
+                                        key={product.id}
+                                        variants={gridItem}
+                                        layout
+                                        exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                                    >
+                                        <ProductCard product={product} />
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
                         {filteredProducts.length === 0 && (
-                            <p className="text-center text-gray-400 mt-8">No products found.</p>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="text-center text-gray-400 mt-8"
+                            >
+                                No products found.
+                            </motion.p>
                         )}
                     </>
                 )}

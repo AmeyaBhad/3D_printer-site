@@ -1,8 +1,18 @@
 import React, { useContext, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShopContext } from '../context/ShopContext';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { ArrowLeft, Plus, Trash2, RefreshCcw, Package } from 'lucide-react';
+
+const statsContainer = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+};
+const statCard = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
+};
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -73,25 +83,42 @@ const Admin = () => {
             {/* Analytics Section */}
             <div className="bg-gray-800 rounded-lg p-6">
                 <h2 className="text-2xl font-bold text-white mb-6">Site-Wide Analytics</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-gray-700 p-5 rounded-lg"><h3 className="text-gray-400 text-sm font-medium">Total Views</h3><p className="text-3xl font-bold text-white">{totalViews.toLocaleString()}</p></div>
-                    <div className="bg-gray-700 p-5 rounded-lg"><h3 className="text-gray-400 text-sm font-medium">Total Sales</h3><p className="text-3xl font-bold text-white">${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></div>
-                    <div className="bg-gray-700 p-5 rounded-lg"><h3 className="text-gray-400 text-sm font-medium">Units Sold</h3><p className="text-3xl font-bold text-white">{totalUnitsSold.toLocaleString()}</p></div>
-                    <div className="bg-gray-700 p-5 rounded-lg"><h3 className="text-gray-400 text-sm font-medium">Active Products</h3><p className="text-3xl font-bold text-white">{activeProducts.length}</p></div>
-                </div>
+                <motion.div
+                    variants={statsContainer}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+                >
+                    <motion.div variants={statCard} whileHover={{ y: -3 }} className="bg-gray-700 p-5 rounded-lg transition-shadow hover:shadow-lg hover:shadow-amber-500/10"><h3 className="text-gray-400 text-sm font-medium">Total Views</h3><p className="text-3xl font-bold text-white">{totalViews.toLocaleString()}</p></motion.div>
+                    <motion.div variants={statCard} whileHover={{ y: -3 }} className="bg-gray-700 p-5 rounded-lg transition-shadow hover:shadow-lg hover:shadow-amber-500/10"><h3 className="text-gray-400 text-sm font-medium">Total Sales</h3><p className="text-3xl font-bold text-white">${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p></motion.div>
+                    <motion.div variants={statCard} whileHover={{ y: -3 }} className="bg-gray-700 p-5 rounded-lg transition-shadow hover:shadow-lg hover:shadow-amber-500/10"><h3 className="text-gray-400 text-sm font-medium">Units Sold</h3><p className="text-3xl font-bold text-white">{totalUnitsSold.toLocaleString()}</p></motion.div>
+                    <motion.div variants={statCard} whileHover={{ y: -3 }} className="bg-gray-700 p-5 rounded-lg transition-shadow hover:shadow-lg hover:shadow-amber-500/10"><h3 className="text-gray-400 text-sm font-medium">Active Products</h3><p className="text-3xl font-bold text-white">{activeProducts.length}</p></motion.div>
+                </motion.div>
 
                 <h2 className="text-2xl font-bold text-white mb-6">Product Performance</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <motion.div
+                    variants={statsContainer}
+                    initial="hidden"
+                    animate="show"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                >
                     {activeProducts.map(product => (
-                        <div key={product.id} className="bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200" onClick={() => setSelectedProduct(product)}>
+                        <motion.div
+                            key={product.id}
+                            variants={statCard}
+                            whileHover={{ y: -4, scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:shadow-lg hover:shadow-amber-500/20"
+                            onClick={() => setSelectedProduct(product)}
+                        >
                             <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
                             <div className="p-4">
                                 <h3 className="text-lg font-bold text-white truncate">{product.name}</h3>
                                 <p className="text-sm text-gray-400">Click to view details</p>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
-                </div>
+                </motion.div>
             </div>
 
             {/* Product Management Section */}
@@ -261,7 +288,17 @@ const Admin = () => {
                 </div>
             </div>
             <div className="container mx-auto px-6 py-12">
-                {selectedProduct ? renderProductDetail() : renderDashboard()}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={selectedProduct ? `detail-${selectedProduct.id}` : 'dashboard'}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.25 }}
+                    >
+                        {selectedProduct ? renderProductDetail() : renderDashboard()}
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );

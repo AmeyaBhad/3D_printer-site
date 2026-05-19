@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ShopContext } from '../context/ShopContext';
 import { Package, MapPin, Settings } from 'lucide-react';
 import { api } from '../api';
@@ -158,7 +159,17 @@ const Profile = () => {
                     </aside>
                     {/* Main Content */}
                     <main className="w-full md:w-3/4">
-                        {renderContent()}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, y: 12 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -8 }}
+                                transition={{ duration: 0.25 }}
+                            >
+                                {renderContent()}
+                            </motion.div>
+                        </AnimatePresence>
                     </main>
                 </div>
             </div>

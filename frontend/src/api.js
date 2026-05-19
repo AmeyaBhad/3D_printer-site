@@ -37,6 +37,7 @@ export const api = {
     login: (email, password) => request('/auth/login', { method: 'POST', body: { email, password } }),
     register: (email, password, displayName) =>
         request('/auth/register', { method: 'POST', body: { email, password, displayName } }),
+    googleLogin: (credential) => request('/auth/google', { method: 'POST', body: { credential } }),
 
     listProducts: () => request('/products'),
     getProduct: (id) => request(`/products/${id}`),

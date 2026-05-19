@@ -78,6 +78,22 @@ export const ShopProvider = ({ children }) => {
         }
     };
 
+    const googleLogin = async (credential) => {
+        try {
+            const res = await api.googleLogin(credential);
+            setToken(res.token);
+            setCurrentUser({
+                id: res.id,
+                email: res.email,
+                displayName: res.displayName,
+                role: res.role === 'ADMIN' ? 'admin' : 'user',
+            });
+            return { ok: true };
+        } catch (err) {
+            return { ok: false, message: err.message || 'Google sign-in failed' };
+        }
+    };
+
     const logout = () => {
         clearToken();
         setCurrentUser(null);
@@ -152,7 +168,7 @@ export const ShopProvider = ({ children }) => {
             products, setProducts, refreshProducts, productsLoading, productsError,
             cart, addToCart, removeFromCart, updateCartQuantity, clearCart,
             isCartOpen, setIsCartOpen, toggleCart,
-            currentUser, login, register, logout,
+            currentUser, login, register, googleLogin, logout,
             addProduct, toggleProductStatus,
             placeOrder,
         }}>
