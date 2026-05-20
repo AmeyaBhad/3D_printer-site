@@ -1,0 +1,45 @@
+# Render Blueprint — Spring Boot backend for 3DForge
+# Drop this into the Render dashboard via "New > Blueprint" pointing at this repo,
+# or it will be picked up automatically when you create a Web Service from this repo
+# with rootDir = Backend.
+services:
+  - type: web
+    name: forge3d-backend
+    runtime: java
+    plan: free
+    rootDir: Backend
+    buildCommand: mvn -DskipTests clean package
+    startCommand: java -jar target/backend-0.0.1-SNAPSHOT.jar
+    healthCheckPath: /api/health
+    envVars:
+      - key: JAVA_VERSION
+        value: "17"
+      # Auto-generated 32-char secret — Render does this once and persists it.
+      - key: JWT_SECRET
+        generateValue: true
+      # Postgres connection — paste values from your Supabase dashboard
+      # (Project Settings -> Database -> Connection string).
+      # SPRING_DATASOURCE_URL must be the JDBC form, e.g.:
+      #   jdbc:postgresql://db.PROJECTREF.supabase.co:5432/postgres?sslmode=require
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      # Comma-separated frontend origins, e.g. "https://forge3d.vercel.app"
+      # You'll fill this in after Vercel gives you a URL.
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+      # Optional — fill in later when you set up payments / Google login / chatbot upgrade.
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # Optional — only set these if you want the demo admin/user accounts to be created.
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      - key: SEED_USER_PASSWORD
+        sync: false
