@@ -22,7 +22,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ IllegalArgumentException.class, org.springframework.security.authentication.BadCredentialsException.class })
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            org.springframework.security.authentication.BadCredentialsException.class,
+            org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+            org.springframework.web.bind.MethodArgumentNotValidException.class,
+            org.springframework.web.bind.MissingServletRequestParameterException.class,
+            org.springframework.http.converter.HttpMessageNotReadableException.class
+    })
     public ResponseEntity<ApiError> handleBadRequest(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
                 LocalDateTime.now(),
