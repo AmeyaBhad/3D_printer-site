@@ -5,7 +5,7 @@ import { api } from '../api';
 
 const INITIAL_MESSAGE = {
     from: 'bot',
-    text: "Hi! I'm Forge, your 3DForge assistant. Ask me about products, prices, shipping, or anything else.",
+    text: "Hi! I'm Dimi, your Printed Dimensions assistant. Ask me about products, prices, shipping, or anything else.",
     suggestions: ['Show me products', 'Shipping info', 'Custom orders', 'Contact'],
 };
 
@@ -85,7 +85,7 @@ const Chatbot = () => {
                                 <MessageCircle size={18} className="text-white" />
                             </div>
                             <div>
-                                <p className="text-white font-bold leading-tight">Forge Assistant</p>
+                                <p className="text-white font-bold leading-tight">Dimi</p>
                                 <p className="text-amber-100 text-xs">Usually replies instantly</p>
                             </div>
                         </div>

@@ -8,11 +8,11 @@
 		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.forge3d</groupId>
+	<groupId>com.printeddimensions</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend</name>
-	<description>Backend for 3D Forge</description>
+	<description>Backend for Printed Dimensions</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

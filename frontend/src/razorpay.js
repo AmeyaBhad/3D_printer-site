@@ -36,7 +36,7 @@ export const openCheckout = async ({ keyId, razorpayOrderId, amountPaise, curren
             order_id: razorpayOrderId,
             amount: amountPaise,
             currency: currency || 'INR',
-            name: name || '3DForge',
+            name: name || 'Printed Dimensions',
             description: description || 'Order payment',
             prefill: prefill || {},
             theme: { color: '#f59e0b' },

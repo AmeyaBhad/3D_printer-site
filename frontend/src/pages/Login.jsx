@@ -15,7 +15,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const finish = (emailValue) => {
-        if (emailValue === 'admin@3dforge.com') {
+        if (emailValue === 'admin@printeddimensions.com') {
             navigate('/admin');
         } else {
             navigate('/profile');

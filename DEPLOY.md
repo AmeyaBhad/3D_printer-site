@@ -1,4 +1,4 @@
-# Deploying 3DForge for free
+# Deploying Printed Dimensions for free
 
 Stack:
 - **Supabase** — Postgres database (with admin UI for editing data)
@@ -16,7 +16,7 @@ Do these phases in order.
 
 1. Go to **https://supabase.com** → "Start your project" → sign in with GitHub.
 2. Click **New Project**.
-   - Name: `3dforge` (or anything)
+   - Name: `printeddimensions` (or anything)
    - Database Password: **generate one and save it somewhere** — you'll need it in Phase B
    - Region: pick the one closest to you (e.g. South Asia – Mumbai or Singapore)
    - Plan: Free
@@ -60,8 +60,8 @@ Phase A is done — don't close the Supabase tab, you'll use it later to view da
    - leave `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `GOOGLE_CLIENT_ID` blank — fill later
 6. Click **Apply** / **Create Blueprint**.
 7. First build takes 5–10 minutes (Maven downloads ~200 MB of dependencies on first run). Watch the live log in Render's dashboard. Wait until status says **Live**.
-8. **Copy your Render URL** — it looks like `https://forge3d-backend-XXXX.onrender.com`.
-9. Verify by opening `https://forge3d-backend-XXXX.onrender.com/api/products` in your browser. You should see a JSON array of 8 seed products.
+8. **Copy your Render URL** — it looks like `https://printeddimensions-backend-XXXX.onrender.com`.
+9. Verify by opening `https://printeddimensions-backend-XXXX.onrender.com/api/products` in your browser. You should see a JSON array of 8 seed products.
 
 Phase B done.
 
@@ -78,7 +78,7 @@ Phase B done.
    - Build Command: leave default (`npm run build`)
    - Output Directory: leave default (`dist`)
 5. Expand **Environment Variables** and add:
-   - Name: `VITE_API_BASE_URL`, Value: `https://forge3d-backend-XXXX.onrender.com/api` (use your actual Render URL from Phase B, **and don't forget the `/api` suffix**)
+   - Name: `VITE_API_BASE_URL`, Value: `https://printeddimensions-backend-XXXX.onrender.com/api` (use your actual Render URL from Phase B, **and don't forget the `/api` suffix**)
 6. Click **Deploy**. Takes ~2 minutes.
 7. **Copy your Vercel URL** — looks like `https://3d-printer-site-XXXX.vercel.app`.
 
@@ -90,7 +90,7 @@ Phase C done.
 
 The backend currently rejects requests from your Vercel URL because of CORS. Fix it:
 
-1. Back to **Render** → your `forge3d-backend` service → **Environment** tab.
+1. Back to **Render** → your `printeddimensions-backend` service → **Environment** tab.
 2. Edit `CORS_ALLOWED_ORIGINS`:
    - Value: paste your Vercel URL (no trailing slash), e.g. `https://3d-printer-site-XXXX.vercel.app`
    - You can list multiple comma-separated, e.g. `https://3d-printer-site.vercel.app,https://3d-printer-site-git-main-yourname.vercel.app` (Vercel creates one URL per branch — add them all to be safe)
@@ -109,8 +109,8 @@ Render's free instance sleeps after 15 minutes of no traffic. UptimeRobot pings 
 2. Dashboard → **+ Add New Monitor**.
 3. Settings:
    - Monitor Type: **HTTP(s)**
-   - Friendly Name: `3DForge backend`
-   - URL: `https://forge3d-backend-XXXX.onrender.com/api/health`
+   - Friendly Name: `Printed Dimensions backend`
+   - URL: `https://printeddimensions-backend-XXXX.onrender.com/api/health`
    - Monitoring Interval: **5 minutes** (the free minimum)
 4. Save.
 
@@ -122,7 +122,7 @@ Phase E done. Backend will stay warm 24/7.
 
 Visit your Vercel URL:
 1. Home page loads with all 8 products.
-2. Login → use the `SEED_ADMIN_PASSWORD` you set in Phase B step 5 with email `admin@3dforge.com`.
+2. Login → use the `SEED_ADMIN_PASSWORD` you set in Phase B step 5 with email `admin@printeddimensions.com`.
 3. Go to Admin page → analytics show real numbers.
 4. Open Supabase dashboard → **Table Editor** → `products` → edit a product's price → refresh your site → new price shows. **That's the "edit DB to update site" flow you asked for.**
 

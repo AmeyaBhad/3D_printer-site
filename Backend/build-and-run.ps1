@@ -14,9 +14,12 @@ $srcDir = Join-Path $backendDir 'src\main\java'
 $resourcesDir = Join-Path $backendDir 'src\main\resources'
 $classesDir = Join-Path $backendDir 'target\classes'
 
-# Clean target/classes of forge3d classes only (leave META-INF maven metadata)
-$forgeClasses = Join-Path $classesDir 'com\forge3d'
-if (Test-Path $forgeClasses) { Remove-Item $forgeClasses -Recurse -Force }
+# Clean target/classes of our app classes only (leave META-INF maven metadata)
+$appClasses = Join-Path $classesDir 'com\printeddimensions'
+if (Test-Path $appClasses) { Remove-Item $appClasses -Recurse -Force }
+# Also wipe any leftover classes from the old com.forge3d package
+$oldClasses = Join-Path $classesDir 'com\forge3d'
+if (Test-Path $oldClasses) { Remove-Item $oldClasses -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $classesDir | Out-Null
 
 # Build classpath from all jars in .m2 (excluding sources/javadoc)
@@ -28,7 +31,7 @@ $classpath = ($jars -join ';')
 
 # Compile all .java files
 $javaFiles = Get-ChildItem $srcDir -Recurse -Filter '*.java' | Select-Object -ExpandProperty FullName
-$argFile = Join-Path $env:TEMP "forge3d-javac-args.txt"
+$argFile = Join-Path $env:TEMP "printeddimensions-javac-args.txt"
 Set-Content -Path $argFile -Value $javaFiles -Encoding ASCII
 
 Write-Output "Compiling $($javaFiles.Count) Java files..."
@@ -42,4 +45,4 @@ Copy-Item -Path (Join-Path $resourcesDir '*') -Destination $classesDir -Recurse 
 # Run
 $runCp = "$classesDir;$classpath"
 Write-Output "Starting BackendApplication on port 8080..."
-& $java -cp $runCp 'com.forge3d.backend.BackendApplication'
+& $java -cp $runCp 'com.printeddimensions.backend.BackendApplication'

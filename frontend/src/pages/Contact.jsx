@@ -38,7 +38,7 @@ const Contact = () => {
                         </div>
                         <div className="bg-gray-800 p-6 rounded-lg">
                             <h3 className="text-xl font-bold text-white flex items-center gap-3"><Mail className="text-amber-400" />Email</h3>
-                            <p className="text-gray-400 mt-2">contact@3dforge.com</p>
+                            <p className="text-gray-400 mt-2">contact@printeddimensions.com</p>
                         </div>
                         <div className="bg-gray-800 p-6 rounded-lg">
                             <h3 className="text-xl font-bold text-white flex items-center gap-3"><Phone className="text-amber-400" />Phone</h3>

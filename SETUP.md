@@ -1,4 +1,4 @@
-# 3DForge — accounts & setup checklist
+# Printed Dimensions — accounts & setup checklist
 
 Personal cheat-sheet for everything you need to sign up for, in priority order.
 Everything below has a free tier sufficient for this project.
@@ -19,7 +19,7 @@ Everything below has a free tier sufficient for this project.
 
 ### 2. Google Cloud Console — Sign in with Google
 - [ ] Sign in at https://console.cloud.google.com with any Gmail
-- [ ] Top-left → "Select a project" → **New Project** ("3DForge") → Create
+- [ ] Top-left → "Select a project" → **New Project** ("Printed Dimensions") → Create
 - [ ] **APIs & Services → OAuth consent screen**
   - User Type: **External** → fill in app/support/dev emails → Save
   - "Test users" → add your Gmail
@@ -82,5 +82,5 @@ SEED_ADMIN_PASSWORD=your-chosen-password
 SEED_USER_PASSWORD=your-chosen-password
 ```
 
-(Defaults: `SEED_ADMIN_EMAIL=admin@3dforge.com`, `SEED_USER_EMAIL=user@3dforge.com` —
+(Defaults: `SEED_ADMIN_EMAIL=admin@printeddimensions.com`, `SEED_USER_EMAIL=user@printeddimensions.com` —
 override those env vars if you want different addresses.)

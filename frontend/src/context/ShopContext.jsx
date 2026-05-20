@@ -5,7 +5,7 @@ import { openCheckout } from '../razorpay';
 
 export const ShopContext = createContext();
 
-const USER_KEY = 'forge3d.user';
+const USER_KEY = 'printeddimensions.user';
 
 export const ShopProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
@@ -175,7 +175,7 @@ export const ShopProvider = ({ children }) => {
             razorpayOrderId: payment.razorpayOrderId,
             amountPaise: payment.amountPaise,
             currency: payment.currency,
-            name: '3DForge',
+            name: 'Printed Dimensions',
             description: `Order #${order.id}`,
             prefill: currentUser ? { name: currentUser.displayName, email: currentUser.email } : {},
         });
